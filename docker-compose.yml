@@ -22,6 +22,9 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/booking_db
+    volumes:
+      - .:/app
+    working_dir: /app 
 
 volumes:
   postgres_data:

@@ -6,3 +6,8 @@ psycopg2-binary==2.9.9
 python-dotenv==1.0.1
 psycopg2
 python-dotenv
+bcrypt
+pydantic[email]
+watchdog==3.0.0
+python-jose[cryptography]
+python-multipart
