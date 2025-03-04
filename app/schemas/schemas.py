@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -20,3 +21,7 @@ class UserSignInResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BookingCreate(BaseModel):
+    start_time: datetime
+    role: str

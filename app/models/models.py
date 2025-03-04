@@ -19,6 +19,7 @@ class Technician(Base):
     name = Column(String, unique=True, index=True)
     role_id = Column(Integer, ForeignKey("technician_roles.id"))
 
+    role = relationship("TechnicianRole")
     bookings = relationship("Booking", back_populates="technician")
 
 class TechnicianRole(Base):
