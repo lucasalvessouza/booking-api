@@ -2,6 +2,7 @@
 
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import Link from 'next/link';
 import { signUp } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -40,6 +41,7 @@ export default function SignUpPage() {
       <Button variant="contained" color="primary" onClick={handleSubmit}>
         Sign Up
       </Button>
+      <Typography variant='caption'>Already have an account? <Link href='/signin'>Sign In</Link></Typography>
     </Box>
   );
 }
