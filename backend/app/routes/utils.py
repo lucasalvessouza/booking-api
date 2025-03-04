@@ -14,5 +14,4 @@ def validate_token(authorization: str = Header(None)) -> dict:
     return payload
 
 def generate_token(data) -> str:
-    access_token_expires = timedelta(minutes=30)
-    return create_access_token(data=data, expires_delta=access_token_expires)
+    return create_access_token(data=data)

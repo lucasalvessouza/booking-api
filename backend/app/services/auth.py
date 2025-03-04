@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
     to_encode = data.copy()
