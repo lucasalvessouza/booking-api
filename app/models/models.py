@@ -17,8 +17,15 @@ class Technician(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
+    role_id = Column(Integer, ForeignKey("technician_roles.id"))
 
     bookings = relationship("Booking", back_populates="technician")
+
+class TechnicianRole(Base):
+    __tablename__ = "technician_roles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
 
 class Booking(Base):
     __tablename__ = "bookings"
@@ -26,7 +33,8 @@ class Booking(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     technician_id = Column(Integer, ForeignKey("technicians.id"))
-    start_time = Column(DateTime, default=datetime.datetime.utcnow)
+    start_time = Column(DateTime, default=datetime.datetime.now)
+    end_time = Column(DateTime, default=datetime.datetime.now)
 
     user = relationship("User", back_populates="bookings")
     technician = relationship("Technician", back_populates="bookings")
