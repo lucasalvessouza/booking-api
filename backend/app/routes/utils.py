@@ -4,7 +4,7 @@ from datetime import timedelta
 
 def validate_token(authorization: str = Header(None)) -> dict:
     if authorization is None or not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=400, detail="Invalid or missing token")
+        raise HTTPException(status_code=401, detail="Invalid or missing token")
     token = authorization.split(" ")[1]
     try:
         payload = verify_token(token)

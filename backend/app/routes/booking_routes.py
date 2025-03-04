@@ -12,7 +12,7 @@ router = APIRouter(prefix="/bookings", tags=["Bookings"])
 
 @router.post("/")
 def book_technician(payload: BookingCreate, token: dict = Depends(validate_token), db: Session = Depends(get_db)):
-    technician = get_next_available_technician(db, role=payload.role)
+    technician = get_next_available_technician(db, role_id=payload.role_id)
     if not technician or not is_technician_available(db, technician.id, payload.start_time):
         raise HTTPException(status_code=400, detail="No available technician")
     

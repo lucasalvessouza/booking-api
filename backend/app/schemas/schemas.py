@@ -24,4 +24,4 @@ class UserSignInResponse(BaseModel):
 
 class BookingCreate(BaseModel):
     start_time: datetime
-    role: str
+    role_id: int
