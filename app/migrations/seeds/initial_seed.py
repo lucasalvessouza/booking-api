@@ -1,27 +1,14 @@
-"""database_seed
+import sys
+import os
 
-Revision ID: ccd3c1c6d0c9
-Revises: a7f6e14948e8
-Create Date: 2025-03-04 10:16:40.241004
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-"""
-from typing import Sequence, Union
-
-from alembic import op
-import sqlalchemy as sa
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.models import Booking, Technician, TechnicianRole, User
 
 
-# revision identifiers, used by Alembic.
-revision: str = 'ccd3c1c6d0c9'
-down_revision: Union[str, None] = 'a7f6e14948e8'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
-
-
-def upgrade() -> None:
+def initial_seed() -> None:
     session = SessionLocal()
 
     try:
@@ -67,14 +54,5 @@ def upgrade() -> None:
     finally:
         session.close()
 
-def downgrade() -> None:
-    session = SessionLocal()
-
-    try:
-        session.query(Booking).delete()
-        session.query(Technician).delete()
-        session.query(TechnicianRole).delete()
-        session.query(User).delete()
-        session.commit()
-    finally:
-        session.close()
+if __name__ == "__main__":
+    initial_seed()
