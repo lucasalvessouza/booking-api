@@ -53,3 +53,14 @@ def get_booking(id: int, token: dict = Depends(validate_token), db: Session = De
             "role": booking.technician.role.name
         }
     }
+
+@router.delete("/{id}")
+def delete_booking(id: int, token: dict = Depends(validate_token), db: Session = Depends(get_db)):
+    user = get_user_by_email(db, token.get("email"))
+    booking = db.query(Booking).filter(Booking.id == id, Booking.user_id == user.id).first()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    db.delete(booking)
+    db.commit()
+    return {"message": "Booking deleted"}

@@ -32,6 +32,8 @@ def signin(user_data: UserSignIn, db: Session = Depends(get_db)):
 @router.get("/me")
 def me(token: dict = Depends(validate_token), db: Session = Depends(get_db)):
     user = get_user_by_email(db, token.get("email"))
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return {
         "id": user.id,
         "email": user.email

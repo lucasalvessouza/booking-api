@@ -3,7 +3,6 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.models import Booking, Technician, TechnicianRole, User
 
@@ -26,7 +25,7 @@ def initial_seed() -> None:
         session.add_all(technicians)
         session.commit()
 
-        session.add(User(username="admin", password="admin"))
+        session.add(User(email="admin@mail.com", password="admin"))
         session.commit()
         
         bookings = [
