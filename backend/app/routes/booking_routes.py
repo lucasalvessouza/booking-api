@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.repositories.booking_repository import create_booking, is_technician_available
+from app.repositories.booking_repository import (
+ create_booking,
+ get_bookings_by_user_id,
+ get_booking_by_id
+)
 from app.repositories.technician_repository import get_next_available_technician
 from app.repositories.user_repository import get_user_by_email
 from app.models.models import Booking
@@ -29,7 +33,7 @@ def book_technician(payload: BookingCreate, token: dict = Depends(validate_token
 @router.get("/")
 def get_bookings(token: dict = Depends(validate_token), db: Session = Depends(get_db)):
     user = get_user_by_email(db, token.get("email"))
-    bookings = db.query(Booking).filter(Booking.user_id == user.id).all()
+    bookings = get_bookings_by_user_id(db, user.id)
 
     return [{
         "id": booking.id,
@@ -40,8 +44,8 @@ def get_bookings(token: dict = Depends(validate_token), db: Session = Depends(ge
 @router.get("/{id}")
 def get_booking(id: int, token: dict = Depends(validate_token), db: Session = Depends(get_db)):
     user = get_user_by_email(db, token.get("email"))
-    booking = db.query(Booking).filter(Booking.id == id, Booking.user_id == user.id).first()
-    if not booking:
+    booking = get_booking_by_id(db, id)
+    if not booking or int(booking.user_id) != int(user.id):
         raise HTTPException(status_code=404, detail="Booking not found")
     
     return {
@@ -57,8 +61,8 @@ def get_booking(id: int, token: dict = Depends(validate_token), db: Session = De
 @router.delete("/{id}")
 def delete_booking(id: int, token: dict = Depends(validate_token), db: Session = Depends(get_db)):
     user = get_user_by_email(db, token.get("email"))
-    booking = db.query(Booking).filter(Booking.id == id, Booking.user_id == user.id).first()
-    if not booking:
+    booking = get_booking_by_id(db, id)
+    if not booking or int(booking.user_id) != int(user.id):
         raise HTTPException(status_code=404, detail="Booking not found")
     
     db.delete(booking)

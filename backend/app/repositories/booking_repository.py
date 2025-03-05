@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.models.models import Booking
 
+def get_bookings_by_user_id(db: Session, user_id: int):
+    return db.query(Booking).filter(Booking.user_id == user_id).order_by(Booking.start_time.asc()).all()
+
 def create_booking(db: Session, user_id: int, technician_id: int, start_time: datetime):
     end_time = start_time + timedelta(hours=1)
     booking = Booking(user_id=user_id, technician_id=technician_id, start_time=start_time, end_time=end_time)
