@@ -20,3 +20,14 @@ def is_technician_available(db: Session, technician_id: int, start_time: datetim
     ).first()
 
     return not is_technician_busy and start_time > datetime.now()
+
+def get_booking_by_id(db: Session, booking_id: int):
+    return db.query(Booking).filter(Booking.id == booking_id).first()
+
+def get_next_user_booking(db: Session, user_id: int):
+    return db.query(Booking).filter(Booking.user_id == user_id).order_by(Booking.start_time.asc()).first()
+
+def delete_booking(db: Session, booking_id: int):
+    booking = get_booking_by_id(db, booking_id)
+    db.delete(booking)
+    db.commit()

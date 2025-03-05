@@ -25,3 +25,6 @@ class UserSignInResponse(BaseModel):
 class BookingCreate(BaseModel):
     start_time: datetime
     role_id: int
+
+class PromptCreate(BaseModel):
+    user_input: str
