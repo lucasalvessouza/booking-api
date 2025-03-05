@@ -19,7 +19,7 @@ export default function SignInPage() {
       const { data } = await signIn(email, password);
       login(data.access_token);
       toast.success('Signed in successfully!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to sign in.');
     } finally {
       setLoading(false);
@@ -45,7 +45,7 @@ export default function SignInPage() {
       <Button variant="contained" color="primary" onClick={handleSubmit} loading={loading}>
         Sign In
       </Button>
-      <Typography variant='caption'>Don't have an account? <Link href='/signup'>Sign Up</Link></Typography>
+      <Typography variant='caption'>Don`t have an account? <Link href='/signup'>Sign Up</Link></Typography>
     </Box>
   );
 }

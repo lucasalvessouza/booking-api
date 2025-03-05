@@ -45,7 +45,7 @@ export default function AddBooking({ openDialog, onClose, onFetchBookings }: Add
    try {
      const data = await getAllTechnicianroles()
      setRoles(data);
-   } catch (error) {
+   } catch {
      toast.error('Failed to fetch technician roles');
    }
  };
@@ -67,8 +67,9 @@ export default function AddBooking({ openDialog, onClose, onFetchBookings }: Add
      toast.success('Booking created successfully');
      onFetchBookings();
      onClose();
-   } catch (error: any) {
-     const message = error.response?.data?.detail || 'Failed to create booking';
+   } catch (error) {
+     //  eslint-disable-next-line @typescript-eslint/no-explicit-any
+     const message = (error as any).response?.data?.detail || 'Failed to create booking';
      toast.error(message);
    }
  };
@@ -93,7 +94,7 @@ export default function AddBooking({ openDialog, onClose, onFetchBookings }: Add
      <FormControl fullWidth margin="normal">
        <DateTimePicker 
          value={startTime}
-         onChange={(date: any) => setStartTime(date)}
+         onChange={(date) => setStartTime(date)}
          label="Date"
          
        />

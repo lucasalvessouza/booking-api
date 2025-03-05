@@ -17,7 +17,7 @@ export default function SignUpPage() {
       await signUp(email, password);
       toast.success('Signed up successfully!');
       router.push('/signin');
-    } catch (error) {
+    } catch {
       toast.error('Failed to sign up.');
     }
   };

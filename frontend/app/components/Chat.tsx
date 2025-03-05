@@ -33,7 +33,7 @@ export default function ChatDialog({ onUpdate }: ChatDialogProps) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
-  const listRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const defaultText = `
    <span style='font-weight: bold'> Welcome! 🌱 How can I assist you today? </span>
    <br>You can try these commands:
@@ -74,7 +74,7 @@ export default function ChatDialog({ onUpdate }: ChatDialogProps) {
         }
         setMessages(previous => [...previous, { text: response.message, sender: 'bot' }]);
         onUpdate();
-      } catch (error) {
+      } catch {
         setMessages(previous => [...previous, { text: defaultText, sender: 'bot' }]);
       }
     }

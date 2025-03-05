@@ -39,16 +39,16 @@ const DashboardPage = () => {
   const { logout, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && bookings.length === 0) {
       fetchBookings();
     }
-  }, []);
+  }, [isLoggedIn, bookings]);
 
   const fetchBookings = async () => {
     try {
       const data = await getAllBookings()
       setBookings(data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to fetch bookings');
     }
   };
@@ -59,7 +59,7 @@ const DashboardPage = () => {
       await deleteBooking(id);
       toast.success('Booking deleted successfully');
       fetchBookings();
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete booking');
     }
   };
@@ -71,7 +71,7 @@ const DashboardPage = () => {
       setBookingDetail(data);
       setOpenBookingDetailDialog(true)
     }
-    catch (error) {
+    catch {
       toast.error('Failed to fetch booking details');
     }
   }
@@ -94,7 +94,7 @@ const DashboardPage = () => {
         </Button>
         <ChatDialog onUpdate={fetchBookings} />
       </Box>
-      <TableContainer mt={4}>
+      <TableContainer sx={{ mt: 4 }}>
         <Table>
           <TableHead>
             <TableRow>
