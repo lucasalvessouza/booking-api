@@ -1,5 +1,8 @@
 # Booking Platform
 
+![ScreenRecording2025-03-05at11 46 45-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/1d1209ac-f860-47cf-971f-9f1e28a81579)
+
+
 This project is a **Full Stack Application** combining:
 
 - **FastAPI** for the backend (in `backend` folder)
