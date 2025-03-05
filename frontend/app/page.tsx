@@ -12,28 +12,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  ButtonGroup
+  ButtonGroup,
 } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
-import {
-  DateTimePicker
-} from '@mui/x-date-pickers';
 import toast from 'react-hot-toast';
 import {
-  getAllTechnicianroles,
   getAllBookings,
-  createBooking,
   getBookingDetails,
   deleteBooking
 } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import ChatDialog from '@/app/components/Chat';
+import AddBooking from '@/app/components/AddBooking';
+import BookingDetails from '@/app/components/BookingDetails';
 
 interface Booking {
   id: string;
@@ -41,23 +31,17 @@ interface Booking {
   end_time: string;
 }
 
-interface TechnicianRole {
-  id: string;
-  name: string;
-}
-
 const DashboardPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [roles, setRoles] = useState<TechnicianRole[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openAddNewBookingDialog, setOpenAddNewBookingDialog] = useState(false);
   const [openBookingDetailDialog, setOpenBookingDetailDialog] = useState(false);
-  const [selectedRole, setSelectedRole] = useState('');
-  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs);
   const [bookingDetail, setBookingDetail] = useState();
+  const { logout, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    fetchBookings();
-    fetchTechnicianRoles();
+    if (isLoggedIn) {
+      fetchBookings();
+    }
   }, []);
 
   const fetchBookings = async () => {
@@ -69,37 +53,6 @@ const DashboardPage = () => {
     }
   };
 
-  const fetchTechnicianRoles = async () => {
-    try {
-      const data = await getAllTechnicianroles()
-      setRoles(data);
-    } catch (error) {
-      toast.error('Failed to fetch technician roles');
-    }
-  };
-
-  const handleAddBooking = async () => {
-    try {
-      if (!selectedRole) {
-        toast.error('Please select a technician role');
-        return;
-      }
-      if (!startTime) {
-        toast.error('Please select a start time');
-        return;
-      }
-      await createBooking({
-        role_id: selectedRole,
-        start_time: startTime.format('YYYY-MM-DD HH:mm:ss')
-      })
-      toast.success('Booking created successfully');
-      fetchBookings();
-      setOpenDialog(false);
-    } catch (error: any) {
-      const message = error.response?.data?.detail || 'Failed to create booking';
-      toast.error(message);
-    }
-  };
 
   const handleDeleteBooking = async (id: string) => {
     try {
@@ -123,14 +76,24 @@ const DashboardPage = () => {
     }
   }
 
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <Box p={4}>
-      <Typography variant="h3" mb={4}>Dashboard</Typography>
-
-      <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
-        Add New Booking
-      </Button>
-
+      <Box display="flex" justifyContent="space-between" alignItems="center" flexDirection='row' alignContent='center' mb={4}>
+        <Typography variant="h4">My Bookings</Typography>
+        <Button variant="contained" color="primary" onClick={logout}>
+          Logout
+        </Button>
+      </Box>
+      <Box display="flex" justifyContent="flex-start" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="center" gap={2}>
+        <Button variant="contained" color="primary" onClick={() => setOpenAddNewBookingDialog(true)} sx={{ width: { xs: '100%', md: 'auto' } }}>
+          Add New Booking
+        </Button>
+        <ChatDialog onUpdate={fetchBookings} />
+      </Box>
       <TableContainer mt={4}>
         <Table>
           <TableHead>
@@ -163,56 +126,17 @@ const DashboardPage = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
-        <DialogTitle>Add New Booking</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Technician Role</InputLabel>
-            <Select
-              value={selectedRole}
-              label="Technician Role"
-              onChange={(e) => setSelectedRole(e.target.value)}
-            >
-              {roles.map((role) => (
-                <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+      <AddBooking
+        onClose={() => setOpenAddNewBookingDialog(false)}
+        openDialog={openAddNewBookingDialog}
+        onFetchBookings={fetchBookings}
+      />
 
-          <FormControl fullWidth margin="normal">
-            <DateTimePicker 
-              value={startTime}
-              onChange={(date: any) => setStartTime(date)}
-              label="Date"
-              
-            />
-          </FormControl>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleAddBooking} variant="contained" color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={openBookingDetailDialog} onClose={() => setOpenBookingDetailDialog(false)} fullWidth>
-        <DialogTitle>Booking Details</DialogTitle>
-        {
-          bookingDetail && (
-            <DialogContent>
-              <Typography variant='body1'>Technician: {bookingDetail?.technician?.name} / {bookingDetail?.technician?.role}</Typography>
-              <Typography>Start Time: {format(bookingDetail.start_time, "PPPpp")}</Typography>
-              <Typography>End Time: {format(bookingDetail.end_time, "PPPpp")}</Typography>
-            </DialogContent>
-          )
-        }
-
-        <DialogActions>
-          <Button onClick={() => setOpenBookingDetailDialog(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
+      <BookingDetails
+        openDialog={openBookingDetailDialog}
+        onClose={() => setOpenBookingDetailDialog(false)}
+        bookingDetail={bookingDetail}
+      />
     </Box>
   );
 };

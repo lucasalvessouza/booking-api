@@ -60,3 +60,8 @@ export const getBookingDetails = async (id: string) => {
 export const deleteBooking = async (id: string) => {
   return api.delete(`/bookings/${id}`);
 }
+
+export const prompt = async (message: string) => {
+  const response = await api.post('/prompt', { user_input: message });
+  return response.data;
+}

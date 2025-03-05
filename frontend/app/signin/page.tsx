@@ -10,15 +10,19 @@ import { useAuth } from '@/context/AuthContext';
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       const { data } = await signIn(email, password);
       login(data.access_token);
       toast.success('Signed in successfully!');
     } catch (error) {
       toast.error('Failed to sign in.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,7 +42,7 @@ export default function SignInPage() {
         onChange={(e) => setPassword(e.target.value)}
         fullWidth
       />
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
+      <Button variant="contained" color="primary" onClick={handleSubmit} loading={loading}>
         Sign In
       </Button>
       <Typography variant='caption'>Don't have an account? <Link href='/signup'>Sign Up</Link></Typography>
